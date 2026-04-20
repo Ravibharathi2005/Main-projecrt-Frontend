@@ -34,10 +34,14 @@ function Login() {
         return;
       }
 
+      // Pass enhanced data including trust score and risk level
       login({
         token: data.token,
         employeeId: data.employeeId,
         role: data.role,
+        trustScore: data.trustScore,
+        riskLevel: data.riskLevel,
+        alerts: data.alerts,
         user: {
           employeeId: data.employeeId,
           role: data.role,
@@ -47,11 +51,12 @@ function Login() {
 
       navigate("/dashboard", { replace: true });
 
+      // Open company portal in new tab
       setTimeout(() => {
         window.open(
-  "http://localhost:5173/login?monitoringSession=true",
-  "_blank"
-);
+          "http://localhost:5173/login?monitoringSession=true",
+          "_blank"
+        );
       }, 300);
     } catch (error) {
       console.error("Login error:", error);
