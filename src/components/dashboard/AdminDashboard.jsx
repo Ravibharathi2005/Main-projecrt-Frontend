@@ -31,6 +31,15 @@ function AdminDashboard() {
       <div style={styles.container}>
         <h2>Admin Dashboard</h2>
 
+        <div style={styles.dashboardTop}>
+          <button
+            style={styles.portalButton}
+            onClick={() => window.open("http://localhost:5173", "_blank")}
+          >
+            Open Company Portal
+          </button>
+        </div>
+
         <div style={styles.controls}>
           <input
             placeholder="Filter by employeeId"
@@ -107,6 +116,19 @@ const styles = {
     borderRadius: "5px",
     background: "#0d6efd",
     color: "white",
+    cursor: "pointer",
+  },
+  dashboardTop: {
+    display: "flex",
+    justifyContent: "flex-end",
+    marginBottom: "15px",
+  },
+  portalButton: {
+    padding: "8px 16px",
+    background: "#198754",
+    color: "#fff",
+    border: "none",
+    borderRadius: "5px",
     cursor: "pointer",
   },
   table: {

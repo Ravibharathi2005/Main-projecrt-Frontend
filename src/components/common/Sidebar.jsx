@@ -15,6 +15,10 @@ function Sidebar() {
         </li>
 
         <li>
+          <Link to="/profile">Profile</Link>
+        </li>
+
+        <li>
           <Link to="/risk">Risk Status</Link>
         </li>
 

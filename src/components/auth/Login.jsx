@@ -1,6 +1,6 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
-import { useNavigate, Link } from "react-router-dom";
 import { loginUser } from "../../services/auth.service";
 
 function Login() {
@@ -8,50 +8,54 @@ function Login() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { login } = useContext(AuthContext);
+  const { login, user } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [user, navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     if (!employeeId || !password) {
-      alert("Please enter Employee ID and Password");
+      alert("Enter Employee ID and Password");
       return;
     }
 
     try {
       setLoading(true);
-
       const data = await loginUser(employeeId, password);
 
-      if (!data) {
+      if (!data?.token || !data?.employeeId || !data?.role) {
         alert("Login failed");
         return;
       }
 
-      const role = data.role || "USER"; // ✅ safe fallback
-
-      // ✅ store
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("role", role);
-
-      // ✅ context
       login({
-        employeeId,
-        role,
         token: data.token,
+        employeeId: data.employeeId,
+        role: data.role,
+        user: {
+          employeeId: data.employeeId,
+          role: data.role,
+          ...(data.user || {}),
+        },
       });
 
-      // 🔥 role-based redirect
-      if (role === "ADMIN") {
-        navigate("/admin");
-      } else {
-        navigate("/dashboard");
-      }
+      navigate("/dashboard", { replace: true });
 
+      setTimeout(() => {
+        window.open(
+  "http://localhost:5173/login?monitoringSession=true",
+  "_blank"
+);
+      }, 300);
     } catch (error) {
       console.error("Login error:", error);
-      alert("Something went wrong");
+      alert("Login failed");
     } finally {
       setLoading(false);
     }
@@ -59,15 +63,16 @@ function Login() {
 
   return (
     <div style={styles.container}>
-      <h2>Login</h2>
+      <h2>Security Monitoring Login</h2>
 
       <form onSubmit={handleLogin} style={styles.form}>
         <input
           type="text"
-          placeholder="Employee ID (ex: EMP001)"
+          placeholder="Employee ID"
           value={employeeId}
           onChange={(e) => setEmployeeId(e.target.value)}
           style={styles.input}
+          required
         />
 
         <input
@@ -76,18 +81,12 @@ function Login() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           style={styles.input}
+          required
         />
 
         <button type="submit" style={styles.button} disabled={loading}>
           {loading ? "Logging in..." : "Login"}
         </button>
-
-        <p style={{ marginTop: "10px" }}>
-          Don't have an account?{" "}
-          <Link to="/register" style={styles.link}>
-            Register
-          </Link>
-        </p>
       </form>
     </div>
   );

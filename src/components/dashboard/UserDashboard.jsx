@@ -35,12 +35,27 @@ function UserDashboard() {
 
       <div style={styles.container}>
         <h2>Welcome, {user?.employeeId}</h2>
-        <button
-          style={styles.trackButton}
-          onClick={() => trackButton("UserDashboard refresh")}
-        >
-          Refresh Data
-        </button>
+        <p style={styles.subText}>Role: {user?.role || "USER"}</p>
+        <p style={styles.status}>Monitoring status: Active</p>
+
+        <div style={styles.buttonRow}>
+          <button
+            style={styles.portalButton}
+            onClick={() => window.open("http://localhost:5173", "_blank")}
+          >
+            Open Company Portal
+          </button>
+          <button
+            style={styles.trackButton}
+            onClick={() => trackButton("UserDashboard refresh")}
+          >
+            Refresh Data
+          </button>
+        </div>
+        <div style={styles.alerts}>
+          <h3>Alerts</h3>
+          <p>{data.alerts ? `${data.alerts.length} active alerts` : "No active alerts"}</p>
+        </div>
 
         {/* 🔥 CARDS */}
         <div style={styles.grid}>
@@ -90,8 +105,38 @@ const styles = {
     background: "#fff",
     borderRadius: "10px",
   },
-  trackButton: {
+  alerts: {
+    marginTop: "20px",
+    padding: "16px",
+    background: "#fff8f0",
+    borderRadius: "10px",
+    border: "1px solid #ffdca8",
+  },
+  subText: {
+    margin: "6px 0 0",
+    color: "#555",
+  },
+  status: {
+    margin: "6px 0 16px",
+    color: "#198754",
+    fontWeight: "bold",
+  },
+  buttonRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: "12px",
+    marginTop: "12px",
     marginBottom: "15px",
+  },
+  portalButton: {
+    padding: "8px 16px",
+    background: "#198754",
+    color: "#fff",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+  },
+  trackButton: {
     padding: "8px 16px",
     background: "#0d6efd",
     color: "#fff",

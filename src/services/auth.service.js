@@ -9,7 +9,11 @@ export const loginUser = async (employeeId, password) => {
 
     return response.data;
   } catch (error) {
-    console.error("Login error:", error);
+    if (error.response?.status === 401) {
+      return null;
+    }
+
+    console.error("auth.service login error:", error);
     return null;
   }
 };

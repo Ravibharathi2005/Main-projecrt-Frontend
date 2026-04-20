@@ -1,21 +1,34 @@
+import { useContext } from "react";
 import { Navigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 
 function ProtectedRoute({ children, role }) {
-  const token = localStorage.getItem("token");
-  const userRole = localStorage.getItem("role");
+  const { user, loading } = useContext(AuthContext);
 
-  // ❌ Not logged in
-  if (!token) {
+  if (loading) {
+    return <div style={styles.loading}>Loading...</div>;
+  }
+
+  if (!user || !user.employeeId) {
     return <Navigate to="/login" replace />;
   }
 
-  // ❌ Role mismatch
-  if (role && userRole !== role) {
+  if (role && user.role !== role) {
     return <Navigate to="/denied" replace />;
   }
 
-  // ✅ Allowed
   return children;
 }
+
+const styles = {
+  loading: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    minHeight: "100vh",
+    fontSize: "18px",
+    color: "#333",
+  },
+};
 
 export default ProtectedRoute;
