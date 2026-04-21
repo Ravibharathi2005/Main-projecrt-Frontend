@@ -17,3 +17,17 @@ export const loginUser = async (employeeId, password) => {
     return null;
   }
 };
+
+export const verifyBiometric = async (employeeId, biometricData) => {
+  try {
+    const response = await API.post("/api/auth/verify-biometric", {
+      employeeId,
+      biometricData,
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("auth.service verifyBiometric error:", error);
+    return null;
+  }
+};

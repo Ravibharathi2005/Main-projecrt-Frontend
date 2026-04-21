@@ -33,7 +33,9 @@ export const getActivities = async (filters = {}) => {
     const url = `/api/activity${queryString ? `?${queryString}` : ''}`;
 
     const response = await API.get(url);
-    return processActivities(response.data);
+    // Handle both direct array responses and paginated objects
+    const activities = response.data.activities || response.data;
+    return processActivities(activities);
   } catch (error) {
     console.error("Error fetching activities:", error);
     return [];
@@ -43,7 +45,8 @@ export const getActivities = async (filters = {}) => {
 export const getUserActivities = async (employeeId, limit = 50) => {
   try {
     const response = await API.get(`/api/activity/${employeeId}?limit=${limit}`);
-    return processActivities(response.data);
+    const activities = response.data.activities || response.data;
+    return processActivities(activities);
   } catch (error) {
     console.error("Error fetching user activities:", error);
     return [];
@@ -68,6 +71,10 @@ export const getActivityStats = async () => {
 
 // Process raw activity data to add computed fields
 const processActivities = (activities) => {
+  if (!Array.isArray(activities)) {
+    console.warn("processActivities received non-array data:", activities);
+    return [];
+  }
   return activities.map(activity => {
     // Extract browser info from device string
     const browser = extractBrowser(activity.device);

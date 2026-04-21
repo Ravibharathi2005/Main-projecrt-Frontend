@@ -4,11 +4,10 @@ import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 import Dashboard from "./components/dashboard/Dashboard";
-import RiskStatus from "./components/dashboard/RiskStatus";
-import AdminDashboard from "./components/dashboard/AdminDashboard";
-import RiskAlerts from "./components/monitoring/RiskAlerts";
+import Monitoring from "./pages/Monitoring";
+import AdminPanel from "./pages/AdminPanel";
+import Reports from "./pages/Reports";
 import AccessDenied from "./pages/AccessDenied";
-import ActivityLogs from "./components/monitoring/ActivityLogs";
 import Profile from "./pages/Profile";
 import useActivityTracker from "./hooks/useActivityTracker";
 
@@ -36,10 +35,10 @@ function App() {
           />
 
           <Route
-            path="/risk"
+            path="/monitoring"
             element={
               <ProtectedRoute>
-                <RiskStatus />
+                <Monitoring />
               </ProtectedRoute>
             }
           />
@@ -48,25 +47,16 @@ function App() {
             path="/admin"
             element={
               <ProtectedRoute role="ADMIN">
-                <AdminDashboard />
+                <AdminPanel />
               </ProtectedRoute>
             }
           />
 
           <Route
-            path="/alerts"
+            path="/reports"
             element={
               <ProtectedRoute>
-                <RiskAlerts />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/activity-logs"
-            element={
-              <ProtectedRoute role="ADMIN">
-                <ActivityLogs />
+                <Reports />
               </ProtectedRoute>
             }
           />
@@ -78,6 +68,20 @@ function App() {
                 <Profile />
               </ProtectedRoute>
             }
+          />
+
+          {/* Fallback routes */}
+          <Route
+            path="/activity-logs"
+            element={<Navigate to="/monitoring" replace />}
+          />
+          <Route
+            path="/risk"
+            element={<Navigate to="/dashboard" replace />}
+          />
+          <Route
+            path="/alerts"
+            element={<Navigate to="/monitoring" replace />}
           />
 
           <Route path="/denied" element={<AccessDenied />} />
