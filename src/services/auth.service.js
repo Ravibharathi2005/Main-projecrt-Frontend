@@ -5,6 +5,7 @@ export const loginUser = async (employeeId, password) => {
     const response = await API.post("/api/auth/login", {
       employeeId,
       password,
+      appType: "SECURITY",
     });
 
     return response.data;
@@ -23,6 +24,7 @@ export const verifyBiometric = async (employeeId, biometricData) => {
     const response = await API.post("/api/auth/verify-biometric", {
       employeeId,
       biometricData,
+      appType: "SECURITY",
     });
 
     return response.data;
