@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Security Session Broadcaster</title>
+</head>
+<body>
+    <script>
+        /**
+         * Zero-Trust Broadcaster Bridge
+         * This file runs on the Security Website origin (port 5174).
+         * It monitors its origin's localStorage and relays signals to the Company Portal.
+         */
+        
+        // Listen for storage changes on the Security Origin
+        window.addEventListener('storage', (event) => {
+            if (event.key === 'forceLogout') {
+                window.parent.postMessage({ type: 'LOGOUT_SIGNAL', payload: event.newValue }, '*');
+            }
+            if (event.key === 'monitoringSession' && event.newValue === null) {
+                window.parent.postMessage({ type: 'LOGOUT_SIGNAL', payload: 'SESSION_REMOVED' }, '*');
+            }
+        });
+
+        // Initial heartbeat
+        window.parent.postMessage({ type: 'BROADCASTER_READY' }, '*');
+        
+        // Periodic check in case storage event misses (rare)
+        setInterval(() => {
+            const logoutSignal = localStorage.getItem('forceLogout');
+            const sessionActive = sessionStorage.getItem('monitoringSession') === 'true';
+            
+            // If session is totally gone but parent thinks it's active
+            if (!sessionActive && !logoutSignal) {
+                // window.parent.postMessage({ type: 'SESSION_CHECK', active: false }, '*');
+            }
+        }, 2000);
+    </script>
+</body>
+</html>
